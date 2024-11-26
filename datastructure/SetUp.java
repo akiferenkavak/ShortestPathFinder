@@ -144,6 +144,17 @@ public class SetUp {
         for (Node node : nodes) {
             System.out.println(node);
         }
+
+        // Başlangıç ve hedef şehir
+        String startCity = "Istanbul";
+        String endCity = "Antalya";
+
+        // En kısa yolu bul
+        ShortestPathDFS.Result result = ShortestPathDFS.findShortestPath(nodes, startCity, endCity);
+
+        // Sonuçları yazdır
+        System.out.println("Shortest Path: " + result.shortestPath);
+        System.out.println("Shortest Distance: " + result.shortestDistance);
     
 
 

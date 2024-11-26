@@ -6,6 +6,7 @@ public class MyQueue<E> {
    private int first = 0; // the index of the first queue element (initially 0)
 
    // constructor that creates an empty queue with the specified initial capacity
+   @SuppressWarnings("unchecked")
    public MyQueue(int capacity) {
       // the array is created with the type Object instead of the generic type E
       // then casted to E[] as generic array creation is not possible
@@ -63,6 +64,7 @@ public class MyQueue<E> {
       // print a message that the queue capacity is updated
       System.out.println("Queue capacity: " + data.length + " -> " + 2 * data.length);
       // create a new array with the twice the old capacity
+      @SuppressWarnings("unchecked")
       E[] newArray = (E[]) new Object[2 * data.length];
       // copy the stored elements to the new array circularly
       for (int i = 0; i < data.length; i++)

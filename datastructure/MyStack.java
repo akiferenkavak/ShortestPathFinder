@@ -13,6 +13,7 @@ public class MyStack<E> { // E is a generic type.
 
    // constructor that creates an empty stack with the specified initial capacity
    // ensuring that the initial capacity is at least equal to the default capacity
+   @SuppressWarnings("unchecked")
    public MyStack(int capacity) {
       if (capacity < DEFAULT_CAPACITY)
          capacity = DEFAULT_CAPACITY;
@@ -72,6 +73,7 @@ public class MyStack<E> { // E is a generic type.
       // print a message that the stack capacity is updated
       System.out.println("Stack capacity: " + data.length + " -> " + capacity);
       // create a new array with the given capacity
+      @SuppressWarnings("unchecked")
       E[] newArray = (E[]) new Object[capacity];
       // copy the stored elements to the new array
       System.arraycopy(data, 0, newArray, 0, size);

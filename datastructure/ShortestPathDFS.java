@@ -28,96 +28,143 @@ public class ShortestPathDFS {
 
 
     public static ShortestPathDFS.Result findShortestPath(Node[] nodes, String startCity, String endCity) {
-        // En kısa yol ve mesafe için sonuç saklama
-        Result result = new Result();
+        
+      // En kısa yol ve mesafe için sonuç saklama
+      Result result = new Result();
+        
+      // Stack: DFS için kullanılacak
+      MyStack<StackFrame> stack = new MyStack<>();
 
-        // Stack: DFS için kullanılacak
-        MyStack<StackFrame> stack = new MyStack<>();
+      // Stack for cities to visit
+      MyStack<String> stackCities = new MyStack<>();
 
-        // Ziyaret edilen şehirleri saklayan set
-        Set<String> visited = new HashSet<>();
+      //gonna use that later for managing stackCities
+      String cityToVisit;
 
-        // İlk şehirle başla
-        stack.push(new StackFrame(startCity, new ArrayList<>(Arrays.asList(startCity)), 0));
+      // İlk şehirle başla
+      stack.push(new StackFrame(startCity, new ArrayList<>(Arrays.asList(startCity)), 0));
+      StackFrame frame = stack.peek();
 
-        while (!stack.isEmpty()) {
-            // Stack'ten bir frame al
-            StackFrame frame = stack.pop();
-            String currentCity = frame.city;
-            List<String> path = frame.path;
-            List<String> newPath = new ArrayList<>(path); //will need that for the next frame's path
-            int currentDistance = frame.distance;
-            Node currentNode = findNodeByName(nodes, currentCity);
+        //gonna use that for deleting the frame at the top just as a variable
+      StackFrame frameToDelete = stack.peek();
+
+      System.out.println("********************");
+      String currentCity = frame.city;
+      List<String> currentPath = frame.path;
+      int currentDistance = frame.distance;
+      Node currentNode = findNodeByName(nodes, currentCity);
+
+      //puts the neighbours of the initial city into the stackCities
+      for(int i=0;  i < (currentNode.getNeighbours().length ); i++  ){
+        stackCities.push((currentNode.getNeighbours()[i]).getCityName());
+        System.out.println("that one is neighbout to "+startCity+" ---> "+stackCities.peek());
+      }
+
+
+      // as long as there is a city in the stack
+      while (!stackCities.isEmpty()) {
+        System.out.println("you are at the while loop");
+        /*Object[] elements = stackCities.getData();
+        System.out.println("Stack elements:");
+        for (Object element : elements) {
+            System.out.println(element);
+        }*/
+        
+        //give the necessary info to the loop
+        frame = stack.peek();
+        currentCity = frame.city;
+        currentDistance = frame.distance;
+        if(currentCity == null){
+            break;
+        }else{
+            currentNode = findNodeByName(nodes, currentCity);
+        }
+        currentPath = frame.path;
+
+        System.out.println(currentCity);
+
+
+
+        //add the neighbour cities into the stackCities at the very beginning 
+        // don't add if you are at the endCity
+        //but don't add if the stack length is 1 because we allready add it before the while loop
+        /*if((stack.getSize() > 1) && (currentCity != endCity) ){
+            for(int i=0;  i < (currentNode.getNeighbours().length ); i++  ){
+                stackCities.push((currentNode.getNeighbours()[i]).getCityName());
+                System.out.println("this is the added city to stackcities"+stackCities.peek());
+            }
+        }*/
+
+
+        //check if we are at the endcity
+        // and if we are then hold the path and distance at the result object if they are null or bigger than the current result.
+        //delete the frame from the stack always if we are in the endcity
+        if( currentCity == endCity ){
+            //get the distance to the city to visit
+            CityData[] neighbours = currentNode.getNeighbours();
+            int distance = 0; // Bulamazsak varsayılan mesafe
             
-            // pop the top frame and add it to the visited city
-            StackFrame lastPoppedFrame = stack.pop();
-            if(currentCity != endCity){
-                visited.add(currentCity);
-            }
-            else if((currentCity == endCity) && (visited.size() == (nodes.length - 1))){
-                //check if the current path is shorter than the current result or not and then end the program
-                if (currentDistance < result.shortestDistance) {
-                    result.shortestDistance = currentDistance;
-                    result.shortestPath = path; 
-                    System.out.println("found it");
-                }
-                break;
-            }else{
-                if (currentDistance < result.shortestDistance) {
-                    result.shortestDistance = currentDistance;
-                    result.shortestPath = path; 
-                    System.out.println("found it");
-                }
-            }
-
-            // add the neighbours of the current city to the stack as frames
-            for (CityData neighbour : currentNode.getNeighbours()) {
-                if (!visited.contains(neighbour.getCityName())) { //if the neighbour(in that loop) of that city is not in the visited set and it is not the endCity then add it to visited set and create it as a frame and add it to the stack
-                    newPath.add(neighbour.getCityName()); //adds the new city to the path
-                    stack.push(new StackFrame(neighbour.getCityName(),
-                            newPath,
-                            currentDistance + neighbour.getCityDistance()));
+            for (CityData neighbour : neighbours) {
+                if (neighbour.getCityName().equals(endCity)) {
+                    distance = neighbour.getCityDistance();
+                    break;
                 }
             }
             
+            currentDistance = currentDistance + distance;
+            if(currentDistance < result.shortestDistance){
+                result.shortestDistance = currentDistance;
+                result.shortestPath = currentPath;
+            }
+            frameToDelete = stack.pop();
+        }
 
-            /* 
-            // Eğer şehir zaten ziyaret edildiyse devam et
-            if (visited.contains(currentCity)) continue;
+        //delete the peek city in the cityto visit stack if it is in the path of current frame
+        while (  frame.path.contains(stackCities.peek())  ){
+            cityToVisit = stackCities.pop();
+        }
+        //now we can get the city that we want to visit safely. And delete it from the stack in order to move on.
+        cityToVisit = stackCities.pop();
 
-            // Mevcut şehri ziyaret edilmiş olarak işaretle
-            visited.add(currentCity);
-            path.add(currentCity);
+        //now go to the cityTovisit by adding it to the top of the stack
+        if(currentCity != endCity){
+            currentPath.add(cityToVisit); // Yeni şehri ekle
 
-            // Eğer hedef şehre ulaşıldıysa
-            if (currentCity.equals(endCity)) {
-                if (currentDistance < result.shortestDistance) {
-                    result.shortestDistance = currentDistance;
-                    result.shortestPath = new ArrayList<>(path); // Kopya al
-                    System.out.println("found it");
-                }
-            } else {
-                // Mevcut şehrin Node'unu bul
-                Node currentNode = findNodeByName(nodes, currentCity);
 
-                // Komşuları stack'e ekle
-                for (CityData neighbour : currentNode.getNeighbours()) {
-                    if (!visited.contains(neighbour.getCityName())) {
-                        stack.push(new StackFrame(neighbour.getCityName(),
-                                new ArrayList<>(path),
-                                currentDistance + neighbour.getCityDistance()));
-                    }
+            //get the distance to the city to visit
+            CityData[] neighbours = currentNode.getNeighbours();
+            int distance = 0; // Bulamazsak varsayılan mesafe
+            
+            for (CityData neighbour : neighbours) {
+                if (neighbour.getCityName().equals(cityToVisit)) {
+                    distance = neighbour.getCityDistance();
+                    break;
                 }
             }
+            
+            currentDistance = currentDistance + distance;
+            stack.push(new StackFrame(cityToVisit, currentPath, currentDistance));
+            //add neighbour cities to stackCities
+            if((stack.getSize() > 1) && (currentCity != endCity) ){
+                for(int i=0;  i < (currentNode.getNeighbours().length ); i++  ){
+                    stackCities.push((currentNode.getNeighbours()[i]).getCityName());
+                    System.out.println("this is the added city to stackcities "+stackCities.peek());
+                }
+            }
+        }
 
-            // Backtracking: Mevcut şehri ziyaret edilmemiş olarak işaretle
-           // visited.remove(currentCity);
-        } */
 
-         
+      }
+
+      //System.out.println("path is:" + stack.peek().path);
+
+      return result;
+        
     }
-    return result;
-    }
+
+
+
+
     private static Node findNodeByName(Node[] nodes, String cityName) {
         for (Node node : nodes) {
             if (node.getName().equals(cityName)) {
@@ -127,27 +174,5 @@ public class ShortestPathDFS {
         throw new IllegalArgumentException("City " + cityName + " not found in nodes.");
     }
 
-    
-/* 
-    public static void main(String[] args) {
-        // Örnek şehir ve mesafe verileriyle oluşturulmuş Node array'i
-        Node[] nodes = {
-            new Node("Istanbul", new CityData[]{new CityData("Ankara", 450), new CityData("Izmir", 320)}),
-            new Node("Ankara", new CityData[]{new CityData("Istanbul", 450), new CityData("Bursa", 200)}),
-            new Node("Izmir", new CityData[]{new CityData("Istanbul", 320), new CityData("Antalya", 250)}),
-            new Node("Bursa", new CityData[]{new CityData("Ankara", 200), new CityData("Antalya", 350)}),
-            new Node("Antalya", new CityData[]{new CityData("Izmir", 250), new CityData("Bursa", 350)})
-        };
 
-        // Başlangıç ve hedef şehir
-        String startCity = "Istanbul";
-        String endCity = "Antalya";
-
-        // En kısa yolu bul
-        Result result = findShortestPath(nodes, startCity, endCity);
-
-        // Sonuçları yazdır
-        System.out.println("Shortest Path: " + result.shortestPath);
-        System.out.println("Shortest Distance: " + result.shortestDistance);
-    }*/
 }

@@ -27,6 +27,14 @@ public class MyStack<E> { // E is a generic type.
       return size == 0;
    }
 
+   public int getSize(){
+      return size;
+   }
+   public E[] getData() {
+    return data;
+   }
+
+
    // returns the top element in the stack without removing it
    public E peek() {
       // return null if the stack is empty

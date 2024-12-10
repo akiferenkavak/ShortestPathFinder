@@ -144,7 +144,7 @@ public class SetUp {
             System.out.println("CSV dosyası okunamadı.");
         }
 
-        City[] cities = {City.ISTANBUL, City.ANKARA, City.IZMIR, City.URFA};
+        City[] cities = {City.ISTANBUL, City.ANKARA, City.IZMIR, City.URFA, City.DIYARBAKIR, City.GAZIANTEP, City.KAYSERI, City.KONYA};
 
         Node[] nodes = generateNodes(distances, cities);
 
@@ -155,7 +155,7 @@ public class SetUp {
 
         // Başlangıç ve hedef şehir
         String startCity = "ISTANBUL";
-        String endCity = "IZMIR";
+        String endCity = "DIYARBAKIR";
 
         // En kısa yolu bul
         ShortestPathDFS.Result result = ShortestPathDFS.findShortestPath(nodes, startCity, endCity);

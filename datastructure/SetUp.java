@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SetUp {
 
@@ -91,6 +93,12 @@ public class SetUp {
 
     public static Node[] generateNodes(int[][] distances, City[] cityList) {
         Node[] nodes = new Node[cityList.length]; // Tüm şehirler için Node dizisi
+
+        // City dizisindeki şehirlerin indekslerini bir set içinde sakla
+        Set<Integer> validCityIndices = new HashSet<>();
+        for (City city : cityList) {
+            validCityIndices.add(city.getIndex()); // Şehrin indeksini sete ekle
+        }
         
         for (int i = 0; i < cityList.length; i++) {
             City currentCity = cityList[i]; // Mevcut şehir
@@ -100,7 +108,7 @@ public class SetUp {
             // Komşuları bul
             ArrayList<CityData> neighboursList = new ArrayList<>();
             for (int j = 0; j < distances[cityIndex].length; j++) {
-                if (i != j && distances[cityIndex][j] > 0 && distances[cityIndex][j] < 9999) {
+                if (i != j && distances[cityIndex][j] > 0 && distances[cityIndex][j] < 9999 && validCityIndices.contains(j)) {
                     // Komşu şehirse CityData oluştur
                     CityData neighbour = new CityData(City.values()[j].name(), distances[cityIndex][j]);
                     neighboursList.add(neighbour);
@@ -136,7 +144,7 @@ public class SetUp {
             System.out.println("CSV dosyası okunamadı.");
         }
 
-        City[] cities = {City.ISTANBUL, City.ANKARA, City.IZMIR, City.BURSA, City.ANTALYA, City.KAYSERI, City.URFA, City.SAMSUN};
+        City[] cities = {City.ISTANBUL, City.ANKARA, City.IZMIR, City.URFA, City.DIYARBAKIR, City.GAZIANTEP, City.KAYSERI, City.KONYA};
 
         Node[] nodes = generateNodes(distances, cities);
 
@@ -144,6 +152,17 @@ public class SetUp {
         for (Node node : nodes) {
             System.out.println(node);
         }
+
+        // Başlangıç ve hedef şehir
+        String startCity = "ISTANBUL";
+        String endCity = "DIYARBAKIR";
+
+        // En kısa yolu bul
+        ShortestPathDFS.Result result = ShortestPathDFS.findShortestPath(nodes, startCity, endCity);
+
+        // Sonuçları yazdır
+        System.out.println("Shortest Path: " + result.shortestPath);
+        System.out.println("Shortest Distance: " + result.shortestDistance);
     
 
 

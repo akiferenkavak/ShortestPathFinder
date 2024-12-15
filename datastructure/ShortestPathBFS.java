@@ -1,7 +1,7 @@
 import java.util.*;
 //import CityData.java
 
-public class ShortestPathDFS {
+public class ShortestPathBFS {
 
     public static class Result {
         List<String> shortestPath;
@@ -15,13 +15,13 @@ public class ShortestPathDFS {
 
     public static Result findShortestPath(Node[] nodes, String startCity, String endCity) {
         Result result = new Result();
-        MyStack<StackFrame> stack = new MyStack<>();
+        MyQueue<QueueFrame> queue = new MyQueue<>(10);
     
         // İlk şehir ile stack başlatılıyor
-        stack.push(new StackFrame(startCity, Arrays.asList(startCity), 0));
+        queue.enqueue(new QueueFrame(startCity, Arrays.asList(startCity), 0));
     
-        while (!stack.isEmpty()) {
-            StackFrame frame = stack.pop();
+        while (!queue.isEmpty()) {
+            QueueFrame frame = queue.dequeue();
             String currentCity = frame.city;
     
             // Eğer hedef şehre ulaşırsak
@@ -43,7 +43,7 @@ public class ShortestPathDFS {
                 if (!frame.path.contains(neighbour.getCityName())) {
                     List<String> newPath = new ArrayList<>(frame.path);
                     newPath.add(neighbour.getCityName());
-                    stack.push(new StackFrame(neighbour.getCityName(), newPath, frame.distance + neighbour.getCityDistance()));
+                    queue.enqueue(new QueueFrame(neighbour.getCityName(), newPath, frame.distance + neighbour.getCityDistance()));
                 }
             }
         }
@@ -67,12 +67,12 @@ public class ShortestPathDFS {
         return null;
     }
 
-    static class StackFrame {
+    static class QueueFrame {
         String city;
         List<String> path;
         int distance;
 
-        StackFrame(String city, List<String> path, int distance) {
+        QueueFrame(String city, List<String> path, int distance) {
             this.city = city;
             this.path = new ArrayList<>(path); // Derin kopya
             this.distance = distance;

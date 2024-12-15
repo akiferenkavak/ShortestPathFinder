@@ -4,13 +4,14 @@ public class MyQueue<E> {
    private E[] data; // a generic array for storing the elements in the queue
    private int size = 0; // the number of the stored elements (initially 0)
    private int first = 0; // the index of the first queue element (initially 0)
+   private static final int DEFAULT_CAPACITY = 5; // the default array capacity
 
    // constructor that creates an empty queue with the specified initial capacity
    @SuppressWarnings("unchecked")
    public MyQueue(int capacity) {
       // the array is created with the type Object instead of the generic type E
       // then casted to E[] as generic array creation is not possible
-      data = (E[]) new Object[capacity];
+      data = (E[]) new Object[DEFAULT_CAPACITY];
    }
 
    // returns true if the queue is empty and false otherwise

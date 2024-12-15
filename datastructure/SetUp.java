@@ -161,8 +161,18 @@ public class SetUp {
         ShortestPathDFS.Result result = ShortestPathDFS.findShortestPath(nodes, startCity, endCity);
 
         // Sonuçları yazdır
-        System.out.println("Shortest Path: " + result.shortestPath);
-        System.out.println("Shortest Distance: " + result.shortestDistance);
+        System.out.println("Shortest Path for DFS is: " + result.shortestPath);
+        System.out.println("Shortest Distance for DFS is: " + result.shortestDistance);
+
+
+                // En kısa yolu bul
+                ShortestPathBFS.Result resultBFS = ShortestPathBFS.findShortestPath(nodes, startCity, endCity);
+
+                // Sonuçları yazdır
+                System.out.println("Shortest Path for BFS is: " + resultBFS.shortestPath);
+                System.out.println("Shortest Distance for BFS is: " + resultBFS.shortestDistance);
+        
+        
     
 
 

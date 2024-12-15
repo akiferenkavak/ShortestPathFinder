@@ -16,14 +16,15 @@ public class ShortestPathDFS {
     public static Result findShortestPath(Node[] nodes, String startCity, String endCity) {
         Result result = new Result();
         MyStack<StackFrame> stack = new MyStack<>();
-        Set<String> visited = new HashSet<>();
-
+    
+        // İlk şehir ile stack başlatılıyor
         stack.push(new StackFrame(startCity, Arrays.asList(startCity), 0));
-
+    
         while (!stack.isEmpty()) {
             StackFrame frame = stack.pop();
             String currentCity = frame.city;
-
+            System.out.println("Şu anki şehir: " + currentCity);
+    
             // Eğer hedef şehre ulaşırsak
             if (currentCity.equals(endCity)) {
                 if (frame.distance < result.shortestDistance) {
@@ -32,30 +33,31 @@ public class ShortestPathDFS {
                 }
                 continue;
             }
-
+    
             // Mevcut şehirden komşuları al
             Node currentNode = findNodeByName(nodes, currentCity);
             if (currentNode == null) continue;
-
-            visited.add(currentCity);
-
+    
+            // Komşuların kontrolü ve yeni yolların oluşturulması
             for (CityData neighbour : currentNode.getNeighbours()) {
-                if (!visited.contains(neighbour.getCityName())) {
+                // Eğer bu path içinde şehir yoksa ilerle
+                if (!frame.path.contains(neighbour.getCityName())) {
                     List<String> newPath = new ArrayList<>(frame.path);
                     newPath.add(neighbour.getCityName());
                     stack.push(new StackFrame(neighbour.getCityName(), newPath, frame.distance + neighbour.getCityDistance()));
                 }
             }
         }
-
+    
         // Eğer hedef şehre ulaşılamadıysa
         if (result.shortestPath.isEmpty()) {
             System.out.println("Hedef şehir '" + endCity + "' ulaşılamaz.");
             result.shortestDistance = -1;
         }
-
+    
         return result;
     }
+    
 
     private static Node findNodeByName(Node[] nodes, String cityName) {
         for (Node node : nodes) {

@@ -1,5 +1,5 @@
 import java.util.*;
-//import CityData.java
+
 
 public class ShortestPathDFS {
 
@@ -7,57 +7,69 @@ public class ShortestPathDFS {
         List<String> shortestPath;
         int shortestDistance;
 
-        public Result() {
+        Result() {
+
             this.shortestPath = new ArrayList<>();
             this.shortestDistance = Integer.MAX_VALUE;
         }
     }
 
+
     public static Result findShortestPath(Node[] nodes, String startCity, String endCity) {
+        // En kısa yol ve mesafe için sonuç saklama
         Result result = new Result();
-        MyStack<StackFrame> stack = new MyStack<>();
-    
-        // İlk şehir ile stack başlatılıyor
-        stack.push(new StackFrame(startCity, Arrays.asList(startCity), 0));
-    
+
+        // Stack: DFS için kullanılacak
+        Stack<StackFrame> stack = new Stack<>();
+
+        // Ziyaret edilen şehirleri saklayan set
+        Set<String> visited = new HashSet<>();
+
+        // İlk şehirle başla
+        stack.push(new StackFrame(startCity, new ArrayList<>(), 0));
+
         while (!stack.isEmpty()) {
+            // Stack'ten bir frame al
             StackFrame frame = stack.pop();
             String currentCity = frame.city;
-            System.out.println("Şu anki şehir: " + currentCity);
-    
-            // Eğer hedef şehre ulaşırsak
+            List<String> path = frame.path;
+            int currentDistance = frame.distance;
+
+            // Eğer şehir zaten ziyaret edildiyse devam et
+            if (visited.contains(currentCity)) continue;
+
+            // Mevcut şehri ziyaret edilmiş olarak işaretle
+            visited.add(currentCity);
+            path.add(currentCity);
+
+            // Eğer hedef şehre ulaşıldıysa
             if (currentCity.equals(endCity)) {
-                if (frame.distance < result.shortestDistance) {
-                    result.shortestDistance = frame.distance;
-                    result.shortestPath = new ArrayList<>(frame.path);
+                if (currentDistance < result.shortestDistance) {
+                    result.shortestDistance = currentDistance;
+                    result.shortestPath = new ArrayList<>(path); // Kopya al
+                    System.out.println("found it");
                 }
-                continue;
-            }
-    
-            // Mevcut şehirden komşuları al
-            Node currentNode = findNodeByName(nodes, currentCity);
-            if (currentNode == null) continue;
-    
-            // Komşuların kontrolü ve yeni yolların oluşturulması
-            for (CityData neighbour : currentNode.getNeighbours()) {
-                // Eğer bu path içinde şehir yoksa ilerle
-                if (!frame.path.contains(neighbour.getCityName())) {
-                    List<String> newPath = new ArrayList<>(frame.path);
-                    newPath.add(neighbour.getCityName());
-                    stack.push(new StackFrame(neighbour.getCityName(), newPath, frame.distance + neighbour.getCityDistance()));
+            } else {
+                // Mevcut şehrin Node'unu bul
+                Node currentNode = findNodeByName(nodes, currentCity);
+
+                // Komşuları stack'e ekle
+                for (CityData neighbour : currentNode.getNeighbours()) {
+                    if (!visited.contains(neighbour.getCityName())) {
+                        stack.push(new StackFrame(neighbour.getCityName(),
+                                new ArrayList<>(path),
+                                currentDistance + neighbour.getCityDistance()));
+                    }
                 }
             }
+
+            // Backtracking: Mevcut şehri ziyaret edilmemiş olarak işaretle
+           // visited.remove(currentCity);
         }
-    
-        // Eğer hedef şehre ulaşılamadıysa
-        if (result.shortestPath.isEmpty()) {
-            System.out.println("Hedef şehir '" + endCity + "' ulaşılamaz.");
-            result.shortestDistance = -1;
-        }
-    
+
         return result;
     }
-    
+
 
     private static Node findNodeByName(Node[] nodes, String cityName) {
         for (Node node : nodes) {
@@ -65,8 +77,10 @@ public class ShortestPathDFS {
                 return node;
             }
         }
-        return null;
+        throw new IllegalArgumentException("City " + cityName + " not found in nodes.");
     }
+
+    // Stack Frame Class: Iterative DFS için gerekli
 
     static class StackFrame {
         String city;
@@ -75,6 +89,7 @@ public class ShortestPathDFS {
 
         StackFrame(String city, List<String> path, int distance) {
             this.city = city;
+
             this.path = new ArrayList<>(path); // Derin kopya
             this.distance = distance;
         }

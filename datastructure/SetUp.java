@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
+
 public class SetUp {
 	
 	// Read the adjacency matrix that represents the cities and distances from the CSV file
@@ -67,6 +68,7 @@ public class SetUp {
                 if (distances[i][j] > 0 && distances[i][j] < 9999) {
                 	// Add the neighbours of the current node (city) 
                     nodes[i].addNeighbour(new CityData(cityList[j].name(), distances[i][j]));
+
                 }
             }
         }
@@ -97,5 +99,6 @@ public class SetUp {
         public int getIndex() {
             return index;
         }
+
     }
 }

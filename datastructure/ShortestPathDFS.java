@@ -1,5 +1,6 @@
 import java.util.*;
 
+
 public class ShortestPathDFS {
 
     public static class Result {
@@ -7,6 +8,7 @@ public class ShortestPathDFS {
         int shortestDistance;
 
         Result() {
+
             this.shortestPath = new ArrayList<>();
             this.shortestDistance = Integer.MAX_VALUE;
         }
@@ -68,6 +70,7 @@ public class ShortestPathDFS {
         return result;
     }
 
+
     private static Node findNodeByName(Node[] nodes, String cityName) {
         for (Node node : nodes) {
             if (node.getName().equals(cityName)) {
@@ -78,6 +81,7 @@ public class ShortestPathDFS {
     }
 
     // Stack Frame Class: Iterative DFS için gerekli
+
     static class StackFrame {
         String city;
         List<String> path;
@@ -85,30 +89,10 @@ public class ShortestPathDFS {
 
         StackFrame(String city, List<String> path, int distance) {
             this.city = city;
-            this.path = path;
+
+            this.path = new ArrayList<>(path); // Derin kopya
             this.distance = distance;
         }
     }
-/* 
-    public static void main(String[] args) {
-        // Örnek şehir ve mesafe verileriyle oluşturulmuş Node array'i
-        Node[] nodes = {
-            new Node("Istanbul", new CityData[]{new CityData("Ankara", 450), new CityData("Izmir", 320)}),
-            new Node("Ankara", new CityData[]{new CityData("Istanbul", 450), new CityData("Bursa", 200)}),
-            new Node("Izmir", new CityData[]{new CityData("Istanbul", 320), new CityData("Antalya", 250)}),
-            new Node("Bursa", new CityData[]{new CityData("Ankara", 200), new CityData("Antalya", 350)}),
-            new Node("Antalya", new CityData[]{new CityData("Izmir", 250), new CityData("Bursa", 350)})
-        };
 
-        // Başlangıç ve hedef şehir
-        String startCity = "Istanbul";
-        String endCity = "Antalya";
-
-        // En kısa yolu bul
-        Result result = findShortestPath(nodes, startCity, endCity);
-
-        // Sonuçları yazdır
-        System.out.println("Shortest Path: " + result.shortestPath);
-        System.out.println("Shortest Distance: " + result.shortestDistance);
-    }*/
 }

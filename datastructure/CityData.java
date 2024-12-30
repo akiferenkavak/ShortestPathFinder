@@ -1,40 +1,46 @@
+// This class represents the cities and its distance to other cities
+// The distances are edges in the graph
 public class CityData {
-    // Attributes
+	
     private String cityName;
     private int cityDistance;
-
-    // Constructor
+    
+    // Initialize the city name and distance using constructor
+    // Time Complexity -> O(1)
     public CityData(String cityName, int cityDistance) {
         this.cityName = cityName;
+        // Distance from the current city to the neighbor cities
         this.cityDistance = cityDistance;
     }
-
-    // Getter for cityName
+    
+    // Return the name of the city
+    // Time Complexity -> O(1)
     public String getCityName() {
         return cityName;
     }
-
-    // Setter for cityName
+    
+    // Set the name of the city
+    // Time Complexity -> O(1)
     public void setCityName(String cityName) {
         this.cityName = cityName;
     }
-
-    // Getter for cityDistance
+    
+    // Return the city distance
+    // Time Complexity -> O(1)
     public int getCityDistance() {
         return cityDistance;
     }
-
-    // Setter for cityDistance
+    
+    // Set the city distance
+    // Time Complexity -> O(1)
     public void setCityDistance(int cityDistance) {
         this.cityDistance = cityDistance;
     }
-
-    // Override toString() method for better readability
+    
+    // Time Complexity -> O(n)
+    // n is the length of the cityName string
     @Override
     public String toString() {
-        return "CityData{" +
-                "cityName='" + cityName + '\'' +
-                ", cityDistance=" + cityDistance +
-                '}';
+        return "CityData{" + "cityName='" + cityName + '\'' + ", cityDistance=" + cityDistance + '}';
     }
 }
